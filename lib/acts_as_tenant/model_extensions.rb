@@ -55,7 +55,7 @@ module ActsAsTenant
           end
           if ActsAsTenant.current_tenant
             if options.has_key?(:association)
-              joins(options[:association]).where("#{options[:association]}.#{fkey.to_s} = ?", ActsAsTenant.current_tenant.id )
+              joins(options[:association]).where("#{options[:association]}.#{fkey.to_s.pluralize} = ?", ActsAsTenant.current_tenant.id )
             else
               where(fkey.to_sym => ActsAsTenant.current_tenant.id)
             end
