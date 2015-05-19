@@ -45,7 +45,7 @@ module ActsAsTenant
         ActsAsTenant.set_tenant_klass(tenant)
 
         # Create the association
-        valid_options = options.slice(:foreign_key, :class_name)
+        valid_options = options.slice(:foreign_key, :class_name, :associations)
         fkey = valid_options[:foreign_key] || ActsAsTenant.fkey
         belongs_to tenant, valid_options
 
@@ -54,6 +54,11 @@ module ActsAsTenant
             raise ActsAsTenant::Errors::NoTenantSet
           end
           if ActsAsTenant.current_tenant
+            if valid_options.has_key?(:associations)
+              valid_options[:associations].each do |association|
+                joins(association)
+              end
+            end
             where(fkey.to_sym => ActsAsTenant.current_tenant.id)
           else
             all
